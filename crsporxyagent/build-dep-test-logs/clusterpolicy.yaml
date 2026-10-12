@@ -1,0 +1,245 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    crs.nvidia.com/spec-hash: d6ac9626d6e607e6ca5dc65ef39cc67bea3545b4bfdb2fcd990ca9f47adcf037
+  creationTimestamp: "2026-10-03T09:11:32Z"
+  generation: 3
+  labels:
+    app.kubernetes.io/managed-by: crsproxyagent
+    crs.nvidia.com/tenant: acme-corp
+  name: crs-policy-acme-corp
+  resourceVersion: "403320"
+  uid: d3390fb2-dfdb-4389-bd4f-246639b587bd
+spec:
+  admission: true
+  background: false
+  emitWarning: false
+  rules:
+  - context:
+    - globalReference:
+        jmesPath: access_token
+        name: crs-token-acme-corp
+      name: crsToken
+    - apiCall:
+        data:
+        - key: requestId
+          value: '{{ request.uid }}'
+        - key: domain
+          value: WORKLOAD_ADMISSION
+        - key: decisionPath
+          value: crs/admission/allow
+        - key: subject
+          value:
+            claims:
+              subscriptionId: '{{ request.object.metadata.annotations."crs.io/subscription-id"
+                || ''sub-1001'' }}'
+            id: '{{ request.userInfo.username || ''unknown'' }}'
+            type: serviceaccount
+        - key: action
+          value: SCHEDULE_WORKLOAD
+        - key: resource
+          value:
+            gpuCount: '{{ request.object.spec.containers[0].ports[0].containerPort
+              }}'
+            gpuType: '{{ request.object.metadata.annotations."crs.io/gpu-type" ||
+              ''A100'' }}'
+            image: '{{ request.object.spec.containers[0].image }}'
+        method: POST
+        service:
+          headers:
+          - key: Content-Type
+            value: application/json
+          - key: Authorization
+            value: Bearer {{ crsToken }}
+          url: http://host.docker.internal:8080/api/v1/admission/evaluate
+      name: crsDecision
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
+          - kyverno
+          - crs-system
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - crs-demo
+    name: call-policy-engine
+    skipBackgroundRequests: true
+    validate:
+      allowExistingViolations: true
+      deny:
+        conditions:
+          any:
+          - key: '{{ crsDecision.decision }}'
+            operator: NotEquals
+            value: ALLOW
+      message: 'CRS Policy Engine denied this workload ({{ crsDecision.reasonCode
+        }}): {{ crsDecision.reasonMessage }}'
+  validationFailureAction: Enforce
+  webhookTimeoutSeconds: 30
+status:
+  autogen:
+    rules:
+    - context:
+      - globalReference:
+          jmesPath: access_token
+          name: crs-token-acme-corp
+        name: crsToken
+      - apiCall:
+          data:
+          - key: requestId
+            value: '{{ request.uid }}'
+          - key: domain
+            value: WORKLOAD_ADMISSION
+          - key: decisionPath
+            value: crs/admission/allow
+          - key: subject
+            value:
+              claims:
+                subscriptionId: '{{ request.object.spec.template.metadata.annotations."crs.io/subscription-id"
+                  || ''sub-1001'' }}'
+              id: '{{ request.userInfo.username || ''unknown'' }}'
+              type: serviceaccount
+          - key: action
+            value: SCHEDULE_WORKLOAD
+          - key: resource
+            value:
+              gpuCount: '{{ request.object.spec.template.spec.containers[0].ports[0].containerPort
+                }}'
+              gpuType: '{{ request.object.spec.template.metadata.annotations."crs.io/gpu-type"
+                || ''A100'' }}'
+              image: '{{ request.object.spec.template.spec.containers[0].image }}'
+          method: POST
+          service:
+            caBundle: ""
+            headers:
+            - key: Content-Type
+              value: application/json
+            - key: Authorization
+              value: Bearer {{ crsToken }}
+            url: http://host.docker.internal:8080/api/v1/admission/evaluate
+          urlPath: ""
+        name: crsDecision
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - kube-system
+            - kyverno
+            - crs-system
+        resources: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - DaemonSet
+            - Deployment
+            - Job
+            - ReplicaSet
+            - ReplicationController
+            - StatefulSet
+            namespaces:
+            - crs-demo
+        resources: {}
+      name: autogen-call-policy-engine
+      skipBackgroundRequests: true
+      validate:
+        allowExistingViolations: true
+        deny:
+          conditions:
+            any:
+            - key: '{{ crsDecision.decision }}'
+              operator: NotEquals
+              value: ALLOW
+        message: 'CRS Policy Engine denied this workload ({{ crsDecision.reasonCode
+          }}): {{ crsDecision.reasonMessage }}'
+    - context:
+      - globalReference:
+          jmesPath: access_token
+          name: crs-token-acme-corp
+        name: crsToken
+      - apiCall:
+          data:
+          - key: requestId
+            value: '{{ request.uid }}'
+          - key: domain
+            value: WORKLOAD_ADMISSION
+          - key: decisionPath
+            value: crs/admission/allow
+          - key: subject
+            value:
+              claims:
+                subscriptionId: '{{ request.object.spec.jobTemplate.spec.template.metadata.annotations."crs.io/subscription-id"
+                  || ''sub-1001'' }}'
+              id: '{{ request.userInfo.username || ''unknown'' }}'
+              type: serviceaccount
+          - key: action
+            value: SCHEDULE_WORKLOAD
+          - key: resource
+            value:
+              gpuCount: '{{ request.object.spec.jobTemplate.spec.template.spec.containers[0].ports[0].containerPort
+                }}'
+              gpuType: '{{ request.object.spec.jobTemplate.spec.template.metadata.annotations."crs.io/gpu-type"
+                || ''A100'' }}'
+              image: '{{ request.object.spec.jobTemplate.spec.template.spec.containers[0].image
+                }}'
+          method: POST
+          service:
+            caBundle: ""
+            headers:
+            - key: Content-Type
+              value: application/json
+            - key: Authorization
+              value: Bearer {{ crsToken }}
+            url: http://host.docker.internal:8080/api/v1/admission/evaluate
+          urlPath: ""
+        name: crsDecision
+      exclude:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+            namespaces:
+            - kube-system
+            - kyverno
+            - crs-system
+        resources: {}
+      match:
+        any:
+        - resources:
+            kinds:
+            - CronJob
+            namespaces:
+            - crs-demo
+        resources: {}
+      name: autogen-cronjob-call-policy-engine
+      skipBackgroundRequests: true
+      validate:
+        allowExistingViolations: true
+        deny:
+          conditions:
+            any:
+            - key: '{{ crsDecision.decision }}'
+              operator: NotEquals
+              value: ALLOW
+        message: 'CRS Policy Engine denied this workload ({{ crsDecision.reasonCode
+          }}): {{ crsDecision.reasonMessage }}'
+  conditions:
+  - lastTransitionTime: "2026-10-03T09:45:57Z"
+    message: Ready
+    reason: Succeeded
+    status: "True"
+    type: Ready
+  rulecount:
+    generate: 0
+    mutate: 0
+    validate: 1
+    verifyimages: 0
+  validatingadmissionpolicy:
+    generated: false
+    message: ""

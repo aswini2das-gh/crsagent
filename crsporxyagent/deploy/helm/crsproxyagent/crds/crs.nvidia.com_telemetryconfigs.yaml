@@ -1,0 +1,154 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: telemetryconfigs.crs.nvidia.com
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+spec:
+  group: crs.nvidia.com
+  names:
+    kind: TelemetryConfig
+    listKind: TelemetryConfigList
+    plural: telemetryconfigs
+    singular: telemetryconfig
+    shortNames:
+      - tc
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Enabled
+          type: boolean
+          jsonPath: .spec.enabled
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          description: TelemetryConfig is the Schema for the telemetryconfigs API.
+          type: object
+          required:
+            - spec
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: TelemetryConfigSpec defines the desired state of TelemetryConfig.
+              type: object
+              required:
+                - enabled
+                - cadvisor
+                - otelCollector
+                - exportEndpoint
+              properties:
+                enabled:
+                  description: Enabled controls whether telemetry collection is active.
+                  type: boolean
+                exportEndpoint:
+                  description: ExportEndpoint is the remote endpoint where telemetry data is exported.
+                  type: string
+                cadvisor:
+                  description: CAdvisor defines the configuration for the cAdvisor container metrics collector.
+                  type: object
+                  required:
+                    - image
+                  properties:
+                    image:
+                      description: Image is the container image for cAdvisor.
+                      type: string
+                    resources:
+                      description: Resources defines the compute resource requirements for cAdvisor.
+                      type: object
+                      properties:
+                        requests:
+                          type: object
+                          additionalProperties:
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                        limits:
+                          type: object
+                          additionalProperties:
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                otelCollector:
+                  description: OTelCollector defines the configuration for the OpenTelemetry Collector.
+                  type: object
+                  required:
+                    - image
+                  properties:
+                    image:
+                      description: Image is the container image for the OpenTelemetry Collector.
+                      type: string
+                    receivers:
+                      description: Receivers is the list of enabled OTel receivers.
+                      type: array
+                      items:
+                        type: string
+                    processors:
+                      description: Processors is the list of enabled OTel processors.
+                      type: array
+                      items:
+                        type: string
+                    exporters:
+                      description: Exporters is the list of enabled OTel exporters.
+                      type: array
+                      items:
+                        type: string
+            status:
+              description: TelemetryConfigStatus defines the observed state of TelemetryConfig.
+              type: object
+              properties:
+                phase:
+                  description: Phase represents the current phase of the telemetry pipeline.
+                  type: string
+                cadvisorReady:
+                  description: CAdvisorReady indicates whether cAdvisor is running and healthy.
+                  type: boolean
+                collectorReady:
+                  description: CollectorReady indicates whether the OTel Collector is running and healthy.
+                  type: boolean
+                conditions:
+                  description: Conditions represent the latest available observations of the resource's state.
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - status
+                      - lastTransitionTime
+                      - reason
+                      - message
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                        enum:
+                          - "True"
+                          - "False"
+                          - Unknown
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                      observedGeneration:
+                        type: integer
+                        format: int64

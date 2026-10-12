@@ -1,0 +1,25 @@
+GROUP:      kyverno.io
+KIND:       ClusterPolicy
+VERSION:    v1
+
+FIELD: service <Object>
+
+
+DESCRIPTION:
+    Service is an API call to a JSON web service.
+    This is used for non-Kubernetes API server calls.
+    It's mutually exclusive with the URLPath field.
+    
+FIELDS:
+  caBundle	<string>
+    CABundle is a PEM encoded CA bundle which will be used to validate
+    the server certificate.
+
+  headers	<[]Object>
+    Headers is a list of optional HTTP headers to be included in the request.
+
+  url	<string> -required-
+    URL is the JSON web service URL. A typical form is
+    `https://{service}.{namespace}:{port}/{path}`.
+
+

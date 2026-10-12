@@ -1,0 +1,3 @@
+docker-desktop
+NAME             STATUS   ROLES           AGE   VERSION
+docker-desktop   Ready    control-plane   76d   v1.34.1

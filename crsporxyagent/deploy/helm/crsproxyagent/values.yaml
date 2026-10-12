@@ -1,0 +1,178 @@
+clusterID: ""  # Required: unique seller cluster identifier
+
+# Kyverno is installed as a chart dependency so policy enforcement ships as
+# part of the CRSProxyAgent release. Set kyverno.enabled=false to use a
+# Kyverno instance already managed elsewhere in the cluster.
+kyverno:
+  enabled: true
+  admissionController:
+    replicas: 1
+  backgroundController:
+    replicas: 1
+  cleanupController:
+    replicas: 1
+  reportsController:
+    replicas: 1
+  # Override the default bitnami/kubectl image (removed from Docker Hub) with
+  # a working kubectl image for all Kyverno hooks and cleanup jobs.
+  test:
+    image:
+      registry: docker.io
+      repository: bitnami/kubectl
+      tag: "1.28"
+  cleanupJobs:
+    admissionReports:
+      enabled: false
+    clusterAdmissionReports:
+      enabled: false
+    updateRequests:
+      enabled: false
+    ephemeralReports:
+      enabled: false
+    clusterEphemeralReports:
+      enabled: false
+  # Disable pre/post-install hook jobs that use the defunct bitnami/kubectl image.
+  # webhooksCleanup = pre-delete hook; policyReportsCleanup = pre-install hook
+  # that creates the "clean-reports" Job (crsproxyagent-kyverno-clean-reports).
+  webhooksCleanup:
+    enabled: false
+  policyReportsCleanup:
+    enabled: false
+
+kafka:
+  brokers: []  # Remote Kafka brokers - NOT managed by operator
+  authSecretName: crs-kafka-credentials
+  tls:
+    enabled: true
+  discoveryTopic: "discovery-data"    # Kafka topic for node discovery events
+  telemetryTopic: "telemetry-data"    # Kafka topic for telemetry data (used by Signing Gateway)
+  rateLimit: 100
+
+# Remote policy evaluation API called by Kyverno on admission. Must be reachable
+# from the Kyverno admission-controller pods (not just from the operator).
+policyAPI:
+  endpoint: ""                          # Base URL, e.g. http://host.docker.internal:8080
+  path: "/api/v1/admission/evaluate"    # Path suffix appended to endpoint
+
+  # Shape of the generated Kyverno ClusterPolicy (one per tenant).
+  #
+  # Strings may contain Kyverno expressions ("{{ request.uid }}"), evaluated at
+  # admission time, and operator placeholders expanded when the policy is
+  # generated: ${tenant.id} ${tenant.clientId} ${tenant.subscriptionId}
+  # ${cluster.id}. Because of the {{ }} expressions, override these through a
+  # values file (-f) rather than --set.
+  policy:
+    nameTemplate: "crs-policy-{tenant}"
+    ruleName: call-policy-engine
+    validationFailureAction: Enforce    # Enforce | Audit
+    background: false
+    reconcileInterval: 5m               # how often the operator re-applies policies
+    # Admission webhook timeout in seconds (Kyverno max 30). Every admission makes
+    # outbound HTTP calls to the policy API, so the default of 10s is too tight.
+    webhookTimeoutSeconds: 30
+    # Fetch the token on a schedule (Kyverno GlobalContextEntry, one per tenant)
+    # instead of calling the token API on every admission request. Needs
+    # Kyverno 1.13+. Set enabled=false to call the token API per request.
+    tokenCache:
+      enabled: true
+      apiVersion: kyverno.io/v2alpha1
+      nameTemplate: "crs-token-{tenant}"
+      refreshInterval: ""               # empty = half of the tenant's token TTL
+    match:
+      kinds: [Pod]
+      namespaces: [crs-demo]            # empty = all namespaces; a tenant may override
+    exclude:
+      namespaces: [kube-system, kyverno, crs-system]
+    # Kyverno context entry names: the token is fetched first, then used in the
+    # Authorization header of the policy call. The token is never stored.
+    tokenContextName: crsToken
+    decisionContextName: crsDecision
+    authScheme: Bearer
+    caBundle: ""                        # PEM CA for https endpoints; omitted when empty
+    request:                            # JSON body posted to the policy API
+      requestId: "{{ request.uid }}"
+      domain: WORKLOAD_ADMISSION
+      decisionPath: crs/admission/allow
+      action: SCHEDULE_WORKLOAD
+      subject:
+        id: "{{ request.userInfo.username || 'unknown' }}"
+        type: serviceaccount
+        claims:
+          subscriptionId: "{{ request.object.metadata.annotations.\"crs.io/subscription-id\" || 'sub-1001' }}"
+      resource:
+        # Demo mapping: gpuCount rides on the first container port so it stays a
+        # JSON number end-to-end. Replace with your real source expression.
+        gpuCount: "{{ request.object.spec.containers[0].ports[0].containerPort }}"
+        gpuType: "{{ request.object.metadata.annotations.\"crs.io/gpu-type\" || 'A100' }}"
+        image: "{{ request.object.spec.containers[0].image }}"
+    response:                           # fields of the policy API response
+      decisionField: decision
+      allowValue: ALLOW
+      reasonCodeField: reasonCode
+      reasonMessageField: reasonMessage
+    # denyMessage: ""                   # default: "CRS Policy Engine denied this workload ({{ <ctx>.reasonCode }}): {{ <ctx>.reasonMessage }}"
+
+  tenants: []
+  # - id: acme-corp
+  #   clientId: kyverno-acme              # required
+  #   roles: "DECISION_REQUESTER"         # optional; falls back to tokenAPI.defaultRoles; omitted from request if empty
+  #   subscriptionId: acme-corp           # optional; omitted from token request if empty
+  #   ttlSeconds: 3600                    # optional; falls back to tokenAPI.defaultTTLSeconds
+  #   namespaces: [acme-ns]               # optional; overrides policy.match.namespaces
+
+# Token API that Kyverno calls (per admission request) to obtain the JWT it then
+# sends to the policy API. Example:
+#   POST <endpoint><path>?clientId=kyverno-acme&ttlSeconds=3600
+#   -> {"access_token": "...", "token_type": "Bearer", "expires_in": 3600}
+tokenAPI:
+  endpoint: ""                             # Base URL for the token API
+  path: "/api/v1/dev/token"                # Path suffix for token requests
+  method: POST
+  responseTokenField: access_token         # JMESPath of the token in the response
+  defaultRoles: ""                         # Used when a tenant sets none; omitted from the request if empty
+  defaultTTLSeconds: 3600                  # Used when a tenant sets none
+
+telemetry:
+  enabled: true
+  exportEndpoint: "http://host.docker.internal:4318"  # External signing gateway running on Docker host
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  otelCollector:
+    image: otel/opentelemetry-collector-contrib:0.100.0
+
+operator:
+  replicas: 2
+  image:
+    repository: crsproxyagent
+    tag: "dev-v2"
+    pullPolicy: Never  # Use locally built image (docker build -t crsproxyagent:dev .)
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  serviceAccount:
+    create: true
+    name: crsproxyagent
+  leaderElection:
+    enabled: true
+
+hardwareCollector:
+  enabled: false  # Enable on bare-metal / cloud VMs; disable on Docker Desktop (no DMI data)
+
+nodeDiscovery:
+  pollInterval: 5m
+  discoverCPU: true
+  discoverGPU: false
+  discoverStorage: true
+  discoverCloudProvider: true
+  nodeSelector: {}

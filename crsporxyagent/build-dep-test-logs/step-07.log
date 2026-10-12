@@ -1,0 +1,80 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 482B 0.1s done
+#1 DONE 0.3s
+
+#2 [internal] load metadata for gcr.io/distroless/static:nonroot
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#3 DONE 2.4s
+
+#2 [internal] load metadata for gcr.io/distroless/static:nonroot
+#2 DONE 2.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [stage-1 1/3] FROM gcr.io/distroless/static:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
+#6 ...
+
+#7 [builder 1/8] FROM docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052
+#7 resolve docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 0.1s done
+#7 DONE 0.1s
+
+#6 [stage-1 1/3] FROM gcr.io/distroless/static:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
+#6 resolve gcr.io/distroless/static:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
+#6 resolve gcr.io/distroless/static:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3 0.1s done
+#6 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 37.36kB 0.1s done
+#5 DONE 0.1s
+
+#8 [builder 4/8] RUN go mod download
+#8 CACHED
+
+#9 [builder 5/8] COPY cmd/ cmd/
+#9 CACHED
+
+#10 [builder 2/8] WORKDIR /workspace
+#10 CACHED
+
+#11 [builder 3/8] COPY go.mod go.sum ./
+#11 CACHED
+
+#12 [builder 6/8] COPY api/ api/
+#12 CACHED
+
+#13 [builder 7/8] COPY internal/ internal/
+#13 DONE 0.2s
+
+#14 [builder 8/8] RUN CGO_ENABLED=0 GOOS=linux go build -a -o crsproxyagent cmd/main.go
+#14 DONE 171.6s
+
+#6 [stage-1 1/3] FROM gcr.io/distroless/static:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
+#6 CACHED
+
+#15 [stage-1 2/3] COPY --from=builder /workspace/crsproxyagent .
+#15 DONE 1.7s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 4.4s done
+#16 exporting manifest sha256:d7215b176862ae8ad2f5b2ba0cbe862b8eaae0ec610508f19bbdb4e1c05ca99d 0.1s done
+#16 exporting config sha256:8e8622d4a3f54bfa7e00f3b264b8dacafd437b238d3c1265e073d5cad2eff26f 0.0s done
+#16 exporting attestation manifest sha256:10a5f2dd42039cfb25a52580e7e416b26bfc673074172dc52d1f99ad9bea30db
+#16 exporting attestation manifest sha256:10a5f2dd42039cfb25a52580e7e416b26bfc673074172dc52d1f99ad9bea30db 0.1s done
+#16 exporting manifest list sha256:df586df8bf360e2cd997bb8460aef33023e882df69b35d461ec6f390b494948c 0.0s done
+#16 naming to docker.io/library/crsproxyagent:dev done
+#16 unpacking to docker.io/library/crsproxyagent:dev
+#16 unpacking to docker.io/library/crsproxyagent:dev 1.6s done
+#16 DONE 6.5s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/j7qxmaa7l8erk8o8mv8hr6azx

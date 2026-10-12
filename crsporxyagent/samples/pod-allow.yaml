@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-ok
+  namespace: crs-demo
+  annotations:
+    crs.io/subscription-id: sub-1001
+    crs.io/gpu-type: A100
+spec:
+  containers:
+    - name: app
+      image: registry.crs.io/demo/app:1.0
+      ports:
+        - containerPort: 1

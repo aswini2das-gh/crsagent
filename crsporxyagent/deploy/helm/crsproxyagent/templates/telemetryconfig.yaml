@@ -1,0 +1,18 @@
+{{- if .Values.telemetry.enabled }}
+apiVersion: crs.nvidia.com/v1alpha1
+kind: TelemetryConfig
+metadata:
+  name: default
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "crsproxyagent.labels" . | nindent 4 }}
+spec:
+  enabled: {{ .Values.telemetry.enabled }}
+  exportEndpoint: {{ .Values.telemetry.exportEndpoint | quote }}
+  cadvisor:
+    image: {{ .Values.telemetry.cadvisor.image | quote }}
+    resources:
+      {{- toYaml .Values.telemetry.cadvisor.resources | nindent 6 }}
+  otelCollector:
+    image: {{ .Values.telemetry.otelCollector.image | quote }}
+{{- end }}

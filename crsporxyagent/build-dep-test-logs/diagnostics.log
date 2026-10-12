@@ -1,0 +1,134 @@
+===== pods =====
+NAME                                             READY   STATUS    RESTARTS   AGE
+cadvisor-mm6v9                                   1/1     Running   0          43s
+crsproxyagent-6b6775d77c-5fxt7                   1/1     Running   0          52s
+kyverno-admission-controller-d9dcd78d6-sfn5f     1/1     Running   0          52s
+kyverno-background-controller-6f959c55cc-6npfm   1/1     Running   0          52s
+kyverno-cleanup-controller-7f7d4f74f8-gqm5v      1/1     Running   0          52s
+kyverno-reports-controller-fb5f777b4-sbslj       1/1     Running   0          52s
+otel-collector-52hqn                             1/1     Running   0          43s
+
+===== operator log =====
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Creating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Creating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Creating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:20Z	DEBUG	controllers.NodeReconciler	reconciliation complete, requeuing	{"nodediscoveryconfig": {"name":"default","namespace":"crs-system"}, "after": "5m0s"}
+2026-10-03T09:45:20Z	DEBUG	controllers.NodeReconciler	reconciliation complete, requeuing	{"nodediscoveryconfig": {"name":"default","namespace":"crs-system"}, "after": "5m0s"}
+2026-10-03T09:45:20Z	INFO	KubeAPIWarningLogger	unknown field "spec.signingGateway"
+2026-10-03T09:45:20Z	INFO	KubeAPIWarningLogger	unknown field "status.gatewayReady"
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Deploying", "cadvisorReady": false, "collectorReady": false, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:20Z	ERROR	Reconciler error	{"controller": "telemetryconfig", "controllerGroup": "crs.nvidia.com", "controllerKind": "TelemetryConfig", "TelemetryConfig": {"name":"default","namespace":"crs-system"}, "namespace": "crs-system", "name": "default", "reconcileID": "235bacb8-6f84-4cf6-950a-b32c5f390de9", "error": "updating status: Operation cannot be fulfilled on telemetryconfigs.crs.nvidia.com \"default\": the object has been modified; please apply your changes to the latest version and try again"}
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).reconcileHandler
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:324
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).processNextWorkItem
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:261
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Start.func2.2
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:222
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Deploying", "cadvisorReady": false, "collectorReady": false, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:20Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:21Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Deploying", "cadvisorReady": false, "collectorReady": false, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:25Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:25Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:25Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:25Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Degraded", "cadvisorReady": false, "collectorReady": true, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:25Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:26Z	ERROR	Reconciler error	{"controller": "telemetryconfig", "controllerGroup": "crs.nvidia.com", "controllerKind": "TelemetryConfig", "TelemetryConfig": {"name":"default","namespace":"crs-system"}, "namespace": "crs-system", "name": "default", "reconcileID": "eae57bf4-ed1b-4fdd-bd77-80d16b673c2f", "error": "updating status: Operation cannot be fulfilled on telemetryconfigs.crs.nvidia.com \"default\": the object has been modified; please apply your changes to the latest version and try again"}
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).reconcileHandler
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:324
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).processNextWorkItem
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:261
+sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Start.func2.2
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/internal/controller/controller.go:222
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:26Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Degraded", "cadvisorReady": false, "collectorReady": true, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:31Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:31Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:31Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:31Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Ready", "cadvisorReady": true, "collectorReady": true, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:31Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "cadvisor"}
+2026-10-03T09:45:32Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector-config"}
+2026-10-03T09:45:32Z	INFO	controllers.TelemetryReconciler	Updating resource	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "kind": "", "name": "otel-collector"}
+2026-10-03T09:45:32Z	INFO	controllers.TelemetryReconciler	Reconcile complete	{"telemetryconfig": {"name":"default","namespace":"crs-system"}, "phase": "Ready", "cadvisorReady": true, "collectorReady": true, "exportEndpoint": "http://host.docker.internal:4318"}
+2026-10-03T09:45:50Z	INFO	kyverno-manager	updating GlobalContextEntry	{"name": "crs-token-acme-corp", "tenant": "acme-corp"}
+2026-10-03T09:45:50Z	ERROR	kyverno-manager	reconciling Kyverno ClusterPolicies failed; will retry	{"retryIn": "30s", "error": "updating GlobalContextEntry crs-token-acme-corp: Internal error occurred: failed calling webhook \"crsproxyagent-kyverno-svc.crs-system.svc\": failed to call webhook: Post \"https://crsproxyagent-kyverno-svc.crs-system.svc:443/globalcontextvalidate?timeout=10s\": dial tcp 10.107.17.204:443: connect: connection refused"}
+github.com/crs-platform/crsproxyagent/internal/kyverno.(*Manager).Start.func1
+	/workspace/internal/kyverno/manager.go:225
+github.com/crs-platform/crsproxyagent/internal/kyverno.(*Manager).Start
+	/workspace/internal/kyverno/manager.go:237
+sigs.k8s.io/controller-runtime/pkg/manager.(*runnableGroup).reconcile.func1
+	/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.18.4/pkg/manager/runnable_group.go:226
+
+===== kyverno admission controller log =====
+Defaulted container "kyverno" out of: kyverno, kyverno-pre (init)
+[90m2026-10-03T09:45:45Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Deployment from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/engine.go:64[0m[36m >[0m [1msetup exception selector...[0m [36menablePolicyException=[0mfalse [36mexceptionNamespace=[0m [36mlogger=[0msetup/exception-selector [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/engine.go:93[0m[36m >[0m [1msetup config map resolver...[0m [36menableConfigMapCaching=[0mtrue [36mlogger=[0msetup/configmap-resolver [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ConfigMap from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/engine.go:46[0m[36m >[0m [1msetup engine...[0m [36mlogger=[0msetup/engine [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Deployment from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Policy from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ClusterPolicy from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/pkg/controllers/generic/logging/controller.go:45[0m[36m >[0m [1mresource added[0m [36mlogger=[0msetup/cluster-policy [36mname=[0mcrs-policy-acme-corp [36mtype=[0mClusterPolicy [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/controllers/globalcontext/controller.go:79[0m[36m >[0m globalcontextentry created [36mkind=[0mGlobalContextEntry [36mlogger=[0mglobal-context [36mname=[0mcrs-token-acme-corp [36muid=[0m612dfc23-2753-4094-b6df-8e06d29f6c0b [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v2alpha1.GlobalContextEntry from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/controllers/policycache/controller.go:66[0m[36m >[0m warming up ... [36mlogger=[0mpolicycache-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/controllers/policycache/controller.go:94[0m[36m >[0m warm up done [36mlogger=[0mpolicycache-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v2.UpdateRequest from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Namespace from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.RoleBinding from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ClusterRoleBinding from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mk8s.io/client-go@v0.31.1/tools/leaderelection/leaderelection.go:254[0m[36m >[0m [1mattempting to acquire leader lease crs-system/kyverno...[0m [36mlogger=[0mklog [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup [36mname=[0mkyverno-events [36mv=[0m0 [36mworkers=[0m3
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/pkg/event/controller.go:101[0m[36m >[0m [1mstart[0m [36mlogger=[0mEventGenerator [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup [36mname=[0mglobal-context [36mv=[0m0 [36mworkers=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mglobal-context [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup/controllers [36mname=[0mpolicycache-controller [36mv=[0m0 [36mworkers=[0m3
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mpolicycache-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mglobal-context/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mpolicycache-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m2 [36mlogger=[0mpolicycache-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m1 [36mlogger=[0mpolicycache-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mk8s.io/client-go@v0.31.1/tools/leaderelection/leaderelection.go:268[0m[36m >[0m [1msuccessfully acquired lease crs-system/kyverno[0m [36mlogger=[0mklog [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/pkg/leaderelection/leaderelection.go:97[0m[36m >[0m [1mstill leading[0m [36mid=[0mkyverno-admission-controller-d9dcd78d6-sfn5f [36mlogger=[0msetup/leader-election [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/pkg/leaderelection/leaderelection.go:83[0m[36m >[0m [1mstarted leading[0m [36mid=[0mkyverno-admission-controller-d9dcd78d6-sfn5f [36mlogger=[0msetup/leader-election [36mv=[0m0
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Policy from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v2alpha1.GlobalContextEntry from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.MutatingWebhookConfiguration from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ValidatingWebhookConfiguration from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ClusterPolicy from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.Lease from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [34mTRC[0m [1mk8s.io/client-go@v0.31.1/tools/cache/reflector.go:368[0m[36m >[0m Caches populated for *v1.ClusterRole from k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243 [36mlogger=[0mklog [36mv=[0m2
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup/leader/controllers [36mname=[0mglobal-context-webhook-controller [36mv=[0m0 [36mworkers=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mglobal-context-webhook-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mglobal-context-webhook-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup/leader/controllers [36mname=[0mcertmanager-controller [36mv=[0m0 [36mworkers=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mcertmanager-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mcertmanager-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:80[0m[36m >[0m starting routine [36mid=[0m0 [36mlogger=[0mcertmanager-controller/routine [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup/leader/controllers [36mname=[0mexception-webhook-controller [36mv=[0m0 [36mworkers=[0m1
+[90m2026-10-03T09:45:47Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/cmd/internal/controller.go:32[0m[36m >[0m [1mstarting controller[0m [36mlogger=[0msetup/leader/controllers [36mname=[0mwebhook-controller [36mv=[0m0 [36mworkers=[0m2
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mwebhook-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:80[0m[36m >[0m starting routine [36mid=[0m0 [36mlogger=[0mwebhook-controller/routine [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:58[0m[36m >[0m starting ... [36mlogger=[0mexception-webhook-controller [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mexception-webhook-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m1 [36mlogger=[0mwebhook-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:47Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:71[0m[36m >[0m starting worker [36mid=[0m0 [36mlogger=[0mwebhook-controller/worker [36mv=[0m1
+[90m2026-10-03T09:45:48Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/engine/apicall/executor.go:109[0m[36m >[0m executed service APICall [36mlen=[0m277 [36mlogger=[0mglobal-context [36mname=[0mglobalcontext [36mv=[0m1
+[90m2026-10-03T09:45:48Z[0m [32mINF[0m [1mgithub.com/kyverno/kyverno/pkg/logging/log.go:178[0m[36m >[0m [1m2026/10/03 09:45:48 http: TLS handshake error from 10.1.0.1:37338: secret "crsproxyagent-kyverno-svc.crs-system.svc.kyverno-tls-pair" not found[0m [36mlogger=[0mwebhooks/server [36mv=[0m0
+[90m2026-10-03T09:45:49Z[0m [31mERR[0m [1mgithub.com/kyverno/kyverno/pkg/controllers/webhook/controller.go:313[0m[36m >[0m [1mfailed to get lease[0m [36merror=[0m[31m[1m"lease.coordination.k8s.io \"kyverno-health\" not found"[0m[0m [36mlogger=[0mwebhook-controller
+[90m2026-10-03T09:45:49Z[0m [31mERR[0m [1mgithub.com/kyverno/kyverno/pkg/controllers/webhook/controller.go:313[0m[36m >[0m [1mfailed to get lease[0m [36merror=[0m[31m[1m"lease.coordination.k8s.io \"kyverno-health\" not found"[0m[0m [36mlogger=[0mwebhook-controller
+[90m2026-10-03T09:45:49Z[0m [31mERR[0m [1mgithub.com/kyverno/kyverno/pkg/controllers/webhook/controller.go:313[0m[36m >[0m [1mfailed to get lease[0m [36merror=[0m[31m[1m"lease.coordination.k8s.io \"kyverno-health\" not found"[0m[0m [36mlogger=[0mwebhook-controller
+[90m2026-10-03T09:45:49Z[0m [31mERR[0m [1mgithub.com/kyverno/kyverno/pkg/controllers/webhook/controller.go:313[0m[36m >[0m [1mfailed to get lease[0m [36merror=[0m[31m[1m"lease.coordination.k8s.io \"kyverno-health\" not found"[0m[0m [36mlogger=[0mwebhook-controller
+[90m2026-10-03T09:45:57Z[0m DBG [1mgithub.com/kyverno/kyverno/pkg/utils/controller/run.go:115[0m[36m >[0m Retrying request [36merror=[0m[31m[1m"Operation cannot be fulfilled on validatingwebhookconfigurations.admissionregistration.k8s.io \"kyverno-resource-validating-webhook-cfg\": the object has been modified; please apply your changes to the latest version and try again"[0m[0m [36mid=[0m0 [36mlogger=[0mwebhook-controller/worker [36mobj=[0mkyverno-resource-validating-webhook-cfg [36mv=[0m1

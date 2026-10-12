@@ -1,0 +1,8 @@
+?   	github.com/crs-platform/crsproxyagent/api/v1alpha1	[no test files]
+?   	github.com/crs-platform/crsproxyagent/cmd	[no test files]
+ok  	github.com/crs-platform/crsproxyagent/internal/cloud	(cached)
+ok  	github.com/crs-platform/crsproxyagent/internal/controller	(cached)
+ok  	github.com/crs-platform/crsproxyagent/internal/discovery	(cached)
+ok  	github.com/crs-platform/crsproxyagent/internal/kyverno	3.448s
+ok  	github.com/crs-platform/crsproxyagent/internal/publisher	(cached)
+?   	github.com/crs-platform/crsproxyagent/internal/telemetry	[no test files]

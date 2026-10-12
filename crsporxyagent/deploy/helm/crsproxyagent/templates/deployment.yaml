@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "crsproxyagent.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "crsproxyagent.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.operator.replicas }}
+  selector:
+    matchLabels:
+      {{- include "crsproxyagent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "crsproxyagent.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "crsproxyagent.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: manager
+          image: "{{ .Values.operator.image.repository }}:{{ include "crsproxyagent.imageTag" . }}"
+          imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+          args:
+            - --metrics-bind-address=:8080
+            - --health-probe-bind-address=:8081
+            - --leader-elect={{ .Values.operator.leaderElection.enabled }}
+          env:
+            - name: CLUSTER_ID
+              value: {{ required "clusterID is required" .Values.clusterID | quote }}
+            - name: KAFKA_BROKERS
+              value: {{ join "," .Values.kafka.brokers | quote }}
+            - name: KAFKA_TLS_ENABLED
+              value: {{ .Values.kafka.tls.enabled | quote }}
+            {{- if and .Values.kafka.brokers .Values.kafka.authSecretName }}
+            - name: KAFKA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kafka.authSecretName }}
+                  key: username
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kafka.authSecretName }}
+                  key: password
+            {{- end }}
+            - name: POLICY_API_ENDPOINT
+              value: {{ .Values.policyAPI.endpoint | quote }}
+            - name: POLICY_API_PATH
+              value: {{ .Values.policyAPI.path | default "/api/v1/admission/evaluate" | quote }}
+            - name: POLICY_SPEC
+              value: {{ .Values.policyAPI.policy | default dict | toJson | quote }}
+            - name: TOKEN_API_ENDPOINT
+              value: {{ .Values.tokenAPI.endpoint | quote }}
+            - name: TOKEN_API_PATH
+              value: {{ .Values.tokenAPI.path | default "/api/v1/dev/token" | quote }}
+            - name: TOKEN_API_METHOD
+              value: {{ .Values.tokenAPI.method | default "POST" | quote }}
+            - name: TOKEN_API_RESPONSE_FIELD
+              value: {{ .Values.tokenAPI.responseTokenField | default "access_token" | quote }}
+            - name: TOKEN_API_DEFAULT_ROLES
+              value: {{ .Values.tokenAPI.defaultRoles | default "" | quote }}
+            - name: TOKEN_API_DEFAULT_TTL
+              value: {{ .Values.tokenAPI.defaultTTLSeconds | default 3600 | quote }}
+            - name: POLICY_TENANTS
+              value: {{ .Values.policyAPI.tenants | toJson | quote }}
+            - name: LEADER_ELECTION_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OPERATOR_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DISCOVERY_TOPIC
+              value: {{ .Values.kafka.discoveryTopic | default "discovery-data" | quote }}
+            - name: HARDWARE_COLLECTOR_ENABLED
+              value: {{ .Values.hardwareCollector.enabled | quote }}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+            - name: health
+              containerPort: 8081
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.operator.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false

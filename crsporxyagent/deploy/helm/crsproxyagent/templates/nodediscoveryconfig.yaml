@@ -1,0 +1,21 @@
+apiVersion: crs.nvidia.com/v1alpha1
+kind: NodeDiscoveryConfig
+metadata:
+  name: default
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "crsproxyagent.labels" . | nindent 4 }}
+spec:
+  clusterID: {{ required "clusterID is required" .Values.clusterID | quote }}
+  pollInterval: {{ .Values.nodeDiscovery.pollInterval | quote }}
+  discoverCPU: {{ .Values.nodeDiscovery.discoverCPU }}
+  discoverGPU: {{ .Values.nodeDiscovery.discoverGPU }}
+  discoverStorage: {{ .Values.nodeDiscovery.discoverStorage }}
+  discoverCloudProvider: {{ .Values.nodeDiscovery.discoverCloudProvider }}
+  {{- if .Values.nodeDiscovery.nodeSelector }}
+  nodeSelector:
+    {{- toYaml .Values.nodeDiscovery.nodeSelector | nindent 4 }}
+  {{- end }}
+  kafkaBrokers:
+    {{- toYaml .Values.kafka.brokers | nindent 4 }}
+  kafkaAuthSecret: {{ .Values.kafka.authSecretName | quote }}

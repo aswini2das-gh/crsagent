@@ -1,0 +1,65 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "crsproxyagent.fullname" . }}
+  labels:
+    {{- include "crsproxyagent.labels" . | nindent 4 }}
+rules:
+  # Node discovery
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+
+  # Storage discovery
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses", "csinodes", "volumeattachments"]
+    verbs: ["get", "list", "watch"]
+
+  # Workload management (DaemonSets for telemetry, Deployments for signing gateway)
+  - apiGroups: ["apps"]
+    resources: ["daemonsets", "deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # Services and ConfigMaps
+  - apiGroups: [""]
+    resources: ["services", "configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # Secrets (read-only for auth credentials)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+
+  # Kyverno ClusterPolicies for tenant isolation
+  - apiGroups: ["kyverno.io"]
+    resources: ["clusterpolicies", "globalcontextentries"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # CRS CRDs - full access
+  - apiGroups: ["crs.nvidia.com"]
+    resources:
+      - nodediscoveryconfigs
+      - clusterprofiles
+      - telemetryconfigs
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # CRS CRD status subresources
+  - apiGroups: ["crs.nvidia.com"]
+    resources:
+      - nodediscoveryconfigs/status
+      - clusterprofiles/status
+      - telemetryconfigs/status
+    verbs: ["get", "update", "patch"]
+
+  # Leader election
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Events for recording operator activity
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]

@@ -1,0 +1,8 @@
+NAME                                             READY   STATUS    RESTARTS   AGE
+cadvisor-mm6v9                                   1/1     Running   0          35s
+crsproxyagent-6b6775d77c-5fxt7                   1/1     Running   0          44s
+kyverno-admission-controller-d9dcd78d6-sfn5f     1/1     Running   0          44s
+kyverno-background-controller-6f959c55cc-6npfm   1/1     Running   0          44s
+kyverno-cleanup-controller-7f7d4f74f8-gqm5v      1/1     Running   0          44s
+kyverno-reports-controller-fb5f777b4-sbslj       1/1     Running   0          44s
+otel-collector-52hqn                             1/1     Running   0          35s

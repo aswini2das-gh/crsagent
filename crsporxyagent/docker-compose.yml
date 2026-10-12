@@ -1,0 +1,70 @@
+services:
+  # ── Redpanda (Kafka-compatible, lightweight, no JVM/Zookeeper) ────
+  # Three listeners are needed because this broker is reached from two
+  # different network namespaces that both call it something different:
+  #   - HOST:  native Windows processes (python scripts) via localhost:9092
+  #   - K8S:   pods in Docker Desktop's Kubernetes via host.docker.internal:9095
+  #   - INTERNAL: other containers in this compose project via redpanda:9094
+  # Kafka's protocol tells clients the broker's "advertised" address after
+  # the initial connect, so each listener must advertise the address that
+  # specific caller can actually reach — otherwise writes fail with EOF.
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.1
+    container_name: crs-redpanda
+    command:
+      - redpanda
+      - start
+      - --smp 1
+      - --memory 256M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9094,external://0.0.0.0:9092,k8s://0.0.0.0:9095
+      - --advertise-kafka-addr internal://redpanda:9094,external://localhost:9092,k8s://host.docker.internal:9095
+      - --node-id 0
+      - --set redpanda.auto_create_topics_enabled=true
+    ports:
+      - "9092:9092"       # Kafka API (host access, e.g. python scripts)
+      - "9095:9095"       # Kafka API (Kubernetes pods via host.docker.internal)
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ── Redpanda Console (topic/message browser) ──────────────────────
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v2.6.0
+    container_name: crs-redpanda-console
+    ports:
+      - "8088:8080"
+    environment:
+      KAFKA_BROKERS: "redpanda:9094"
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  # ── Signing Gateway ───────────────────────────────────────────────
+  signing-gateway:
+    build:
+      context: ./signing-gateway
+      dockerfile: Dockerfile
+    container_name: crs-signing-gateway
+    ports:
+      - "4318:4318"
+    environment:
+      SIGNING_KEY_PATH: "/etc/crs/signing/key"
+      SIGNING_ALGORITHM: "hmac-sha256"
+      EXPORT_ENDPOINT: "http://localhost:4319"
+      LISTEN_PORT: "4318"
+      KAFKA_BROKERS: "redpanda:9094"
+      KAFKA_TELEMETRY_TOPIC: "${KAFKA_TELEMETRY_TOPIC:-telemetry-data}"
+      KAFKA_ENABLED: "true"
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+volumes:
+  redpanda-data:
